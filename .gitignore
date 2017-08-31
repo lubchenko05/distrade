@@ -91,8 +91,6 @@ ENV/
 # databases
 db.sqlite3
 
-# settings
-settings.py
 
 # idea 
 .idea/
