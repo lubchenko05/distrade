@@ -2,7 +2,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 from django.db import models
 from datetime import datetime
-
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 """
 TODO:
@@ -12,7 +13,7 @@ TODO:
 
     1. modify user model, need to add:
         - Profile photo.
-        - Address.
+        - Address *.
         - Phone.
 
     2. Create views for clients.
@@ -23,6 +24,23 @@ TODO:
     4. Create views for managing data.
 
 """
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length=16)
+    image = models.ImageField(upload_to='Images/Users', default='Images/None/NoUser.jpg')
+    address = models.CharField(max_length=255)
+
+    def __str__(self):
+          return "%s's profile" % self.user
+
+
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+       profile, created = Profile.objects.get_or_create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
 
 
 class Category(models.Model):
