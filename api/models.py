@@ -8,18 +8,18 @@ from django.db.models.signals import post_save
 """
 TODO:
 
-    0. Modify models
+    0. [Done] Modify models:
        Add ImageField, where it's needed.
 
-    1. modify user model, need to add:
+    1. [Done] modify user model, need to add.
         - Profile photo.
-        - Address *.
+        - Address.
         - Phone.
 
-    2. Create views for clients.
-
-    3. Create User role. something like shop manager.
+    2. [Done] Create User role. something like shop manager.
        Create permission for this role.
+
+    3. Create views for clients.
 
     4. Create views for managing data.
 

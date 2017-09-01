@@ -14,3 +14,15 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the owner of the snippet.
         return obj.owner == request.user
+
+
+class IsManager(permissions.BasePermission):
+    """
+    Custom permission to only allow manager get the client orders.
+    """
+    message = 'Allowed only for manager'
+
+    def has_permission(self, request, view):
+        return 'ShopManager' in [i.name for i in request.user.groups.all()]
+
+
