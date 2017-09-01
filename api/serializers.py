@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 
 class UserSerializer (serializers.ModelSerializer):
-    password = serializers.CharField(write_only = True)
+    password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
         user = get_user_model().objects.create(
