@@ -29,7 +29,7 @@ TODO:
 class Profile(models.Model):
     user = models.OneToOneField(User)
     phone = models.CharField(max_length=16)
-    image = models.ImageField(upload_to='Images/Users', default='Images/None/NoUser.jpg')
+    image = models.ImageField(upload_to='Images/Users', default='Images/None/NoUser.jpg', blank=True)
     address = models.CharField(max_length=255)
 
     def __str__(self):
