@@ -44,7 +44,7 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True, blank='True')
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='Images/Categories', default='Images/None/NoCategory.jpg')
 
@@ -59,10 +59,21 @@ class Criterion(models.Model):
         return self.name
 
 
+class Provider(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    address = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='Images/Providers', default='Images/None/NoProvider.jpg')
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True,)
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, related_name='products')
 
     def __str__(self):
         return self.name
@@ -83,16 +94,6 @@ class Characteristic(models.Model):
 
     def __str__(self):
         return '%s - %s' % (self.product.name, self.criterion.name)
-
-
-class Provider(models.Model):
-    name = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)  # MAKE COUNTRY CHOICES
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='Images/Providers', default='Images/None/NoProvider.jpg')
-
-    def __str__(self):
-        return self.name
 
 
 class Feedback(models.Model):
