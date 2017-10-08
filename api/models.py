@@ -28,9 +28,10 @@ TODO:
 
 class Profile(models.Model):
     user = models.OneToOneField(User)
-    phone = models.CharField(max_length=16)
+    phone = models.CharField(max_length=16, blank=True)
     image = models.ImageField(upload_to='Images/Users', default='Images/None/NoUser.jpg', blank=True)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    email = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
           return "%s's profile" % self.user

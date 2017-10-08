@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
 from .models import Profile, Category, Product, ProductImages, Provider
 
 
@@ -13,7 +14,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('phone', 'image', 'address')
+        fields = ('phone', 'email', 'image', 'address')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,17 +26,46 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username']
         )
         user.set_password(validated_data['password'])
-        profile_data = validated_data.pop('profile')
+        phone = ''
+        image = None
+        address = ''
+        if 'profile' in validated_data:
+            profile_data = validated_data.pop('profile')
         # create profile
+            if 'phone' in profile_data:
+                phone = profile_data['phone']
+            if 'email' in profile_data:
+                email = profile_data['email']
+            if 'image' in profile_data:
+                image = profile_data['image']
+            if 'address' in profile_data:
+                address = profile_data['address']
         profile = Profile.objects.create(
             user=user,
-            phone=profile_data['phone'],
-            image=profile_data['image'],
-            address=profile_data['address'],
+            phone=phone,
+            image=image,
+            address=address,
         )
 
         user.save()
         return user
+
+    def update(self, instance, validated_data):
+        profile = Profile.objects.get(user=instance)
+        if 'phone' in validated_data:
+            profile.phone = validated_data['phone']
+        if 'email' in validated_data:
+            profile.email = validated_data['email']
+        if 'image' in validated_data:
+            profile.image = validated_data['image']
+        if 'address' in validated_data:
+            profile.address = validated_data['address']
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+        profile.save()
+        instance.save()
+        return instance
+
 
     class Meta:
         model = get_user_model()
@@ -59,19 +89,22 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
-    products = serializers.HyperlinkedRelatedField(
-        many=True,
-        view_name='product-detail',
-        read_only=True,
-        lookup_field='name')
+    # products = serializers.HyperlinkedRelatedField(
+    #    many=True,
+    #    view_name='product-detail',
+    #    read_only=True,
+    #    lookup_field='name')
+    products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ('name', 'description', 'image', 'products')
+        fields = ['name', 'description', 'image', 'products']
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='category-detail', lookup_field='name')
 
     class Meta:
         model = Category
-        fields = ('name', 'description', 'image')
+        fields = ['url', 'name', 'description', 'image']
+
