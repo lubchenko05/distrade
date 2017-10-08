@@ -18,7 +18,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(required=True)
+    profile = ProfileSerializer(required=False)
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('url', 'email', 'username', 'password', 'profile')
+        fields = ('url', 'username', 'password', 'profile')
 
 
 class ProductImagesSerializer(serializers.ModelSerializer):

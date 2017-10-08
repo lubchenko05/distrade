@@ -17,14 +17,17 @@ from .serializers import (
     ProductSerializer)
 
 
+UserModel = get_user_model()
+
+
 class CreateUserView(CreateAPIView):
-    model = get_user_model()
+    model = UserModel
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
 
 class UpdateUserView(UpdateAPIView):
-    queryset = get_user_model()
+    queryset = UserModel
     permission_classes = (IsAuthenticated, IsSelf)
     serializer_class = UserSerializer
 
@@ -64,8 +67,19 @@ class DetailProductView(RetrieveAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
 def get_user_detail(request, pk):
-    data = UserSerializer(get_user_model().objects.get(pk))
+    user = UserModel.objects.get(pk=pk)
+    if user.exist():
+        data = UserSerializer(user, context={'request': request})
+        return Response(data=data.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def get_self_user(request):
+    data = request.user
     if data:
-        return Response(data=data)
+        return Response(data=UserSerializer(data, context={'request': request}).data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)

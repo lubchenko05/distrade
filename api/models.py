@@ -1,8 +1,9 @@
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 from django.db import models
 from datetime import datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, PermissionsMixin
 from django.db.models.signals import post_save
 
 """
@@ -24,6 +25,62 @@ TODO:
     4. Create views for managing data.
 
 """
+
+
+class MyUserManager(BaseUserManager):
+    """
+    A custom user manager to deal with emails as unique identifiers for auth
+    instead of usernames. The default that's used is "UserManager"
+    """
+    def _create_user(self, username, password, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not username:
+            raise ValueError('The Username must be set')
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, username, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+        return self._create_user(username, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(max_length=40, unique=True, null=True)
+    is_staff = models.BooleanField(
+        'staff status',
+        default=False,
+        help_text='Designates whether the user can log into this site.',
+    )
+    is_active = models.BooleanField(
+        'active',
+        default=True,
+        help_text=
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ,
+    )
+    USERNAME_FIELD = 'username'
+    objects = MyUserManager()
+
+    def __str__(self):
+        return self.username
+
+    def get_full_name(self):
+        return self.username
+
+    def get_short_name(self):
+        return self.username
 
 
 class Profile(models.Model):

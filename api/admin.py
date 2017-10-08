@@ -11,4 +11,6 @@ admin.site.register(Provider)
 admin.site.register(Feedback)
 admin.site.register(Order)
 admin.site.register(Message)
+admin.site.register(User)
+admin.site.register(Profile)
 

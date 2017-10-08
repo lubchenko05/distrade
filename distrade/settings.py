@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'distrade.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'distrade',
+        'NAME': 'distrade2',
         'USER': 'admin',
         'PASSWORD': '12345qwerty',
         'HOST': 'localhost',
@@ -146,3 +146,6 @@ MEDIA_URL = '/media/'
 AUTH_PROFILE_MODULE = 'api.Profile'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+
+AUTH_USER_MODEL = 'api.User'
