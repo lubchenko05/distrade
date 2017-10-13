@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'root',
     'api',
 ]
 
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'distrade.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'distrade2',
+        'NAME': 'distrade',
         'USER': 'admin',
         'PASSWORD': '12345qwerty',
         'HOST': 'localhost',
@@ -143,9 +144,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
-AUTH_PROFILE_MODULE = 'api.Profile'
+AUTH_PROFILE_MODULE = 'root.Profile'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'root.User'

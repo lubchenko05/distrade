@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Profile, Category, Product, ProductImages, Provider
+from root.models import Profile, Category, Product, ProductImages, Provider, Order
 
 
 class ProviderSerializer(serializers.ModelSerializer):
@@ -85,7 +85,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'images', 'category', 'provider')
+        fields = ('name', 'price', 'description', 'images', 'category', 'provider')
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
@@ -108,3 +108,9 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['url', 'name', 'description', 'image']
 
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
+        fields = ['customer', 'products', 'date', 'status']

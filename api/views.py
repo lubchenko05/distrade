@@ -1,21 +1,19 @@
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
-from .permissions import IsManager, IsSelf
-from .models import Category, Provider, Product
+from root.models import Category, Provider, Product, Order
+from root.permissions import IsSelf
 from .serializers import (
     UserSerializer,
     CategorySerializer,
     CategoryDetailSerializer,
     ProviderSerializer,
-    ProductSerializer)
-
+    ProductSerializer, OrderSerializer)
 
 UserModel = get_user_model()
 
@@ -36,6 +34,7 @@ class ListCategoryView(ListAPIView):
     queryset = Category.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = CategorySerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class DetailCategoryView(RetrieveAPIView):
@@ -64,6 +63,12 @@ class DetailProductView(RetrieveAPIView):
     serializer_class = ProductSerializer
 
 
+class OrderListView(ListAPIView):
+    queryset = Order.objects.all()
+    permission_classes(AllowAny,)
+    serializer_class = OrderSerializer
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
 def get_user_detail(request, pk):
@@ -83,3 +88,10 @@ def get_self_user(request):
         return Response(data=UserSerializer(data, context={'request': request}).data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def deploy(request):
+    #  TODO: Run deploy script
+    return Response(data={"ok": "Deploy was complete!"})
