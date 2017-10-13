@@ -144,7 +144,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
-AUTH_PROFILE_MODULE = 'root.Profile'
+AUTH_PROFILE_MODULE = 'rot.Profile'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -5,6 +5,7 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User, PermissionsMixin
 from django.db.models.signals import post_save
+from django.utils import timezone
 
 
 class MyUserManager(BaseUserManager):
@@ -197,7 +198,7 @@ class Like(models.Model):
 
 class Check(models.Model):
     order = models.ForeignKey(Order)
-    date = models.DateTimeField(default=datetime.now())
+    date = models.DateTimeField(default=timezone.now())
     products = models.TextField()
     customer = models.ForeignKey(UserModel)
     file = models.FileField(null=True, blank=True, upload_to='Checks')
