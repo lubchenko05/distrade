@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from .views import (
     CreateUserView,
+    create_category,
     ListCategoryView,
     DetailCategoryView,
     DetailProviderView,
@@ -9,7 +10,9 @@ from .views import (
     ListProductView,
     UpdateUserView,
     get_user_detail,
-    get_self_user, OrderListView, deploy)
+    get_self_user,
+    OrderListView,
+    deploy)
 
 
 urlpatterns = [
@@ -20,6 +23,7 @@ urlpatterns = [
     url(r'^user/(?P<pk>[\w-]+)/update/$', UpdateUserView.as_view(), name='update-user'),
     url(r'^user/(?P<pk>[\w-]+)/$', get_user_detail, name='user-detail'),
     url(r'^category/$', ListCategoryView.as_view(), name='category-list'),
+    url(r'^category/create/$', create_category, name='category-create'),
     url(r'^category/(?P<name>[\w-]+)/$', DetailCategoryView.as_view(), name='category-detail'),
     url(r'^provider/(?P<name>[\w-]+)/$', DetailProviderView.as_view(), name='provider-detail'),
     url(r'^product/$', ListProductView.as_view(), name='product-list'),

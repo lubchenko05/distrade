@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
-from root.models import Category, Provider, Product, Order
+from root.models import Category, Provider, Product, Order, Criterion
 from root.permissions import IsSelf
 from .serializers import (
     UserSerializer,
@@ -45,6 +45,49 @@ class DetailCategoryView(RetrieveAPIView):
     pagination_class = StandardResultsSetPagination
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+def create_category(request):
+    if 'name' in request.data:
+        if Category.objects.filter(name=request.data['name']).exists():
+            return Response(data={"error": 'Category with name %s already exist!' % request.data['name']},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        category = Category.objects.create(name=request.data['name'],
+                                           description=request.data['description'] if 'description' in request.data else '',
+                                           image=request.data['image'] if 'image' in request.data else None, )
+        criterion = request.data['criterion'] if 'criterion' in request.data else None
+        if criterion:
+            if type(criterion) == list:
+                for item in criterion:
+                    Criterion.objects.create(name=item, category=category)
+            else:
+                Criterion.objects.create(name=criterion, category=Category)
+        return Response(data=CategoryDetailSerializer(category).data)
+    else:
+        return Response(data={"error": "Name was required"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+def update_category(request, name):
+    if not Category.objects.filter(name=name).exists():
+        return Response(data={"error": 'Category with name %s was not found' % name},
+                        status=status.HTTP_404_NOT_FOUND)
+    category = Category.objects.get(name=name)
+    if 'description' in request.data:
+        category.description = request.data['description']
+    if 'image' in request.data:
+        category.image = request.data['image']
+    if 'criterion' in request.data:
+        criterion = request.data['criterion']
+        if type(criterion) == list:
+            pass
+        else:
+            pass
+    return Response(data=CategoryDetailSerializer(category).data)
+
+
 class ListProductView(ListAPIView):
     queryset = Product.objects.all()
     permission_classes = (AllowAny,)
@@ -72,8 +115,11 @@ class OrderListView(ListAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
 def get_user_detail(request, pk):
-    user = UserModel.objects.get(pk=pk)
-    if user.exist():
+    try:
+        user = UserModel.objects.get(pk=pk)
+    except:
+        user = None
+    if user:
         data = UserSerializer(user, context={'request': request})
         return Response(data=data.data)
     else:
@@ -95,3 +141,16 @@ def get_self_user(request):
 def deploy(request):
     #  TODO: Run deploy script
     return Response(data={"ok": "Deploy was complete!"})
+
+"""
+TODO:
+0. Add liked for user and likes for product. [Done]
+1. View for add category. [Done]
+2. View for add product.
+3. View for edit category.
+4. View for edit product.
+5. View for add order.
+6. View for edit order.
+7. View for generate check.
+8. View for paying with LiqPay
+"""

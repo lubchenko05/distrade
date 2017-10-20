@@ -2,7 +2,6 @@ from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
 from django.db import models
-from datetime import datetime
 from django.contrib.auth.models import User, PermissionsMixin
 from django.db.models.signals import post_save
 from django.utils import timezone
@@ -95,7 +94,7 @@ class Category(models.Model):
 
 class Criterion(models.Model):
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, null=True)
+    category = models.ForeignKey(Category, null=True, related_name='criterion')
 
     def __str__(self):
         return self.name
@@ -161,7 +160,7 @@ class Order(models.Model):
     )
 
     products = models.ManyToManyField(Product)
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     customer = models.ForeignKey(UserModel)
     status = models.CharField(max_length=255, choices=STATUS, default='NEW')
 
@@ -178,7 +177,7 @@ class Order(models.Model):
 class Message(models.Model):
     owner = models.ForeignKey(get_user_model(), related_name='messages')
     title = models.CharField(max_length=255)
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     text = models.TextField()
 
     def __str__(self):
@@ -186,7 +185,7 @@ class Message(models.Model):
 
 
 class Like(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='liked')
     users = models.ManyToManyField(UserModel, related_name='likes')
 
     def __str__(self):
@@ -198,7 +197,7 @@ class Like(models.Model):
 
 class Check(models.Model):
     order = models.ForeignKey(Order)
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
     products = models.TextField()
     customer = models.ForeignKey(UserModel)
     file = models.FileField(null=True, blank=True, upload_to='Checks')
@@ -212,7 +211,7 @@ class BlackList(models.Model):
         ('N', 'Choose field'),
         ('E', 'Email'),
         ('P', 'Phone'),
-        ('U', 'User'),
+        ('U', 'Username'),
         ('A', 'Address'),
     )
     field = models.CharField(max_length=255, choices=FIELDS, default='N')

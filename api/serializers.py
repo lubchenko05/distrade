@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from root.models import Profile, Category, Product, ProductImages, Provider, Order
+from root.models import Profile, Category, Product, ProductImages, Provider, Order, Criterion
 
 
 class ProviderSerializer(serializers.ModelSerializer):
@@ -20,6 +20,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
     password = serializers.CharField(write_only=True)
+    likes = serializers.HyperlinkedIdentityField(view_name='product-detail',
+                                                 lookup_field='pk', many=True,
+                                                 read_only=True,)
 
     def create(self, validated_data):
         user = get_user_model().objects.create(
@@ -66,10 +69,9 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
     class Meta:
         model = get_user_model()
-        fields = ('url', 'username', 'password', 'profile')
+        fields = ('url', 'username', 'password', 'profile', 'likes')
 
 
 class ProductImagesSerializer(serializers.ModelSerializer):
@@ -82,10 +84,19 @@ class ProductSerializer(serializers.ModelSerializer):
     images = ProductImagesSerializer(many=True, read_only=True)
     provider = ProviderSerializer(read_only=True)
     category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True, lookup_field='name')
+    liked = serializers.HyperlinkedIdentityField(view_name='user-detail',
+                                                 lookup_field='pk', many=True,
+                                                 read_only=True,)
 
     class Meta:
         model = Product
-        fields = ('name', 'price', 'description', 'images', 'category', 'provider')
+        fields = ('name', 'price', 'description', 'images', 'category', 'provider', 'liked')
+
+
+class CriterionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Criterion
+        fields = ('name',)
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
@@ -95,10 +106,11 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
     #    read_only=True,
     #    lookup_field='name')
     products = ProductSerializer(many=True, read_only=True)
+    criterion = CriterionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ['name', 'description', 'image', 'products']
+        fields = ['name', 'description', 'criterion', 'image', 'products']
 
 
 class CategorySerializer(serializers.ModelSerializer):
