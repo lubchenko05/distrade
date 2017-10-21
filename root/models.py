@@ -71,6 +71,8 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='Images/Users', default='Images/None/NoUser.jpg', blank=True)
     address = models.CharField(max_length=255, blank=True)
     email = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+    surname = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
           return "%s's profile" % self.user
@@ -163,6 +165,12 @@ class Order(models.Model):
     date = models.DateTimeField(default=timezone.now)
     customer = models.ForeignKey(UserModel)
     status = models.CharField(max_length=255, choices=STATUS, default='NEW')
+    typeof_delivery = models.CharField(max_length=100, null=True)
+    typeof_payment = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100, null=True)
+    surname = models.CharField(max_length=100, null=True)
+    address = models.CharField(max_length=255, null=True)
+    email = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return '%s - %s' % (self.customer.username, str(self.date))
