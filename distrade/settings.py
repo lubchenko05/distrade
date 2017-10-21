@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'o-%f&#&$0x^00fdr34q#bb8z=shjuv#bm6j#f*n3p8k(jbz95s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -139,10 +139,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 PROJECT_DIR = os.path.dirname(__file__)
 
-STATIC_ROOT= os.path.join(PROJECT_DIR, 'static_media/')
-
-STATIC_URL = '/static/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
@@ -151,6 +147,7 @@ AUTH_PROFILE_MODULE = 'rot.Profile'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'root.User'
 
