@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import permission_classes, api_view
@@ -139,8 +141,12 @@ def get_self_user(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminUser])
 def deploy(request):
-    #  TODO: Run deploy script
-    return Response(data={"ok": "Deploy was complete!"})
+    try:
+        os.system('/usr/src/app/update.sh')
+        return Response(data={"ok": "Deploy was complete!"})
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'error':'deploy error'})
+
 
 """
 TODO:
