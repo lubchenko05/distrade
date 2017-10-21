@@ -150,3 +150,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 AUTH_USER_MODEL = 'root.User'
+
+try:
+    from .local_settings import *
+except ImportError:
+    print('Local settings import error!')
