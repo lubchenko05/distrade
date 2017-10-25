@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from root.models import Profile, Category, Product, ProductImages, Provider, Order, Criterion
+from root.models import Profile, Category, Product, ProductImages, Provider, Order, Criterion, Characteristic, Like
 
 
 class ProviderSerializer(serializers.ModelSerializer):
@@ -48,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
             phone=phone,
             image=image,
             address=address,
+            email=email,
         )
 
         user.save()
@@ -74,29 +75,43 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('url', 'username', 'password', 'profile', 'likes')
 
 
+class CriterionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Criterion
+        fields = ('name',)
+
+
+class CharacteristicSerializer(serializers.ModelSerializer):
+    criterion = CriterionSerializer(read_only=True)
+
+    class Meta:
+        model = Characteristic
+        fields = ('criterion', 'value',)
+
+
 class ProductImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImages
         fields = ('image',)
 
 
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ('users', )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImagesSerializer(many=True, read_only=True)
+    characteristics = CharacteristicSerializer(many=True, read_only=True)
     provider = ProviderSerializer(read_only=True)
     category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True, lookup_field='pk')
-    liked = serializers.HyperlinkedIdentityField(view_name='user-detail',
-                                                 lookup_field='pk', many=True,
-                                                 read_only=True,)
+    liked = LikeSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
-        fields = ('name', 'price', 'description', 'images', 'category', 'provider', 'liked')
-
-
-class CriterionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Criterion
-        fields = ('name',)
+        fields = ('name', 'price', 'description', 'characteristics', 'images', 'category', 'provider', 'liked')
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):

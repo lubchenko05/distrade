@@ -61,6 +61,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.username
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('user-detail', (), {'pk': self.pk})
+
 
 UserModel = get_user_model()
 

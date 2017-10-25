@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
-from root.models import Category, Provider, Product, Order, Criterion
+from root.models import Category, Provider, Product, Order, Criterion, Like
 from root.permissions import IsSelf
 from .serializers import (
     UserSerializer,
@@ -136,6 +136,38 @@ class DetailProductView(RetrieveAPIView):
     serializer_class = ProductSerializer
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def update_product__add_like(request, pk):
+    if not Product.objects.filter(pk=pk).exists():
+        return Response(data={"error": 'Product with name %s was not found' % pk},
+                        status=status.HTTP_404_NOT_FOUND)
+    product = Product.objects.get(pk=pk)
+    like = Like.objects.get_or_create(product=product)[0]
+    if request.user not in like.users.all():
+        like.users.add(request.user)
+        like.save()
+        return Response(data={'ok': 'Like was added'})
+    else:
+        return Response(data={'error': 'Like was already added'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def update_product__remove_like(request, pk):
+    if not Product.objects.filter(pk=pk).exists():
+        return Response(data={"error": 'Product with name %s was not found' % pk},
+                        status=status.HTTP_404_NOT_FOUND)
+    product = Product.objects.get(pk=pk)
+    like = Like.objects.get_or_create(product=product)[0]
+    if request.user in like.users.all():
+        like.users.remove(request.user)
+        like.save()
+        return Response(data={'ok': 'Like was removed'})
+    else:
+        return Response(data={'error': 'User was not liked this product before'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class OrderListView(ListAPIView):
     queryset = Order.objects.all()
     permission_classes(AllowAny,)
@@ -173,18 +205,19 @@ def deploy(request):
         os.system('sh /usr/src/app/update.sh')
         return Response(data={"ok": "Deploy was complete!"})
     except:
-        return Response(status=status.HTTP_400_BAD_REQUEST, data={'error':'deploy error'})
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'deploy error'})
 
 
 """
 TODO:
 0. Add liked for user and likes for product. [Done]
 1. View for add category. [Done]
-2. View for add product.
-3. View for edit category.
-4. View for edit product.
-5. View for add order.
-6. View for edit order.
-7. View for generate check.
-8. View for paying with LiqPay
+2. View for edit category. [Done]
+3. View for adding and removing likes.
+4. View for add order.
+5. View for edit order.
+6. View for generate check.
+7. View for paying with LiqPay
+8. View for add product.
+9. View for edit product.
 """
