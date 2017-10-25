@@ -44,6 +44,7 @@ class DetailCategoryView(RetrieveAPIView):
     permission_classes = (AllowAny,)
     serializer_class = CategoryDetailSerializer
     pagination_class = StandardResultsSetPagination
+    lookup_field = 'pk'
 
 
 @api_view(['POST'])

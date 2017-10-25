@@ -83,7 +83,7 @@ class ProductImagesSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImagesSerializer(many=True, read_only=True)
     provider = ProviderSerializer(read_only=True)
-    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True, lookup_field='name')
+    category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True, lookup_field='pk')
     liked = serializers.HyperlinkedIdentityField(view_name='user-detail',
                                                  lookup_field='pk', many=True,
                                                  read_only=True,)
