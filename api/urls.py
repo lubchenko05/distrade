@@ -34,5 +34,4 @@ urlpatterns = [
     url(r'^provider/(?P<name>[\w-]+)/$', DetailProviderView.as_view(), name='provide detail'),
     url(r'^product/$', ListProductView.as_view(), name='product-list'),
     url(r'^product/(?P<pk>[\w-]+)/$', DetailProductView.as_view(), name='product-detail'),
-
 ]
