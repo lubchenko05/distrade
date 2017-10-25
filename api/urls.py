@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^category/(?P<pk>[\w-]+)/$', DetailCategoryView.as_view(), name='category-detail'),
     url(r'^category/(?P<pk>[\w-]+)/update/$', update_category, name='category-update'),
     url(r'^category/(?P<pk>[\w-]+)/update/add-criterion/$', update_category__add_criterion, name='category-add-criterion'),
-    url(r'^provider/(?P<pk>[\w-]+)/update/remove-criterion/$', update_category__remove_criterion, name='category-remove-criterion'),
+    url(r'^category/(?P<pk>[\w-]+)/update/remove-criterion/$', update_category__remove_criterion, name='category-remove-criterion'),
+    url(r'^provider/(?P<name>[\w-]+)/$', DetailProviderView.as_view(), name='provide detail'),
     url(r'^product/$', ListProductView.as_view(), name='product-list'),
     url(r'^product/(?P<pk>[\w-]+)/$', DetailProductView.as_view(), name='product-detail'),
 
