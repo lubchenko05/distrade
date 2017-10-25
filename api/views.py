@@ -40,7 +40,6 @@ class ListCategoryView(ListAPIView):
 
 
 class DetailCategoryView(RetrieveAPIView):
-    lookup_field = 'name'
     queryset = Category.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = CategoryDetailSerializer
@@ -72,11 +71,11 @@ def create_category(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
-def update_category(request, name):
-    if not Category.objects.filter(name=name).exists():
-        return Response(data={"error": 'Category with name %s was not found' % name},
+def update_category(request, pk):
+    if not Category.objects.filter(pk=pk).exists():
+        return Response(data={"error": 'Category with name %s was not found' % pk},
                         status=status.HTTP_404_NOT_FOUND)
-    category = Category.objects.get(name=name)
+    category = Category.objects.get(pk=pk)
     if 'description' in request.data:
         category.description = request.data['description']
     if 'image' in request.data:
@@ -86,11 +85,11 @@ def update_category(request, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
-def update_category__add_criterion(request, name):
-    if not Category.objects.filter(name=name).exists():
-        return Response(data={"error": 'Category with name %s was not found' % name},
+def update_category__add_criterion(request, pk):
+    if not Category.objects.filter(pk=pk).exists():
+        return Response(data={"error": 'Category with pk %s was not found' % pk},
                         status=status.HTTP_404_NOT_FOUND)
-    category = Category.objects.get(name=name)
+    category = Category.objects.get(pk=pk)
     if 'criterion' in request.data:
         criterion = request.data['criterion']
     else:
@@ -102,11 +101,11 @@ def update_category__add_criterion(request, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
-def update_category__remove_criterion(request, name):
-    if not Category.objects.filter(name=name).exists():
-        return Response(data={"error": 'Category with name %s was not found' % name},
+def update_category__remove_criterion(request, pk):
+    if not Category.objects.filter(pk=pk).exists():
+        return Response(data={"error": 'Category with name %s was not found' % pk},
                         status=status.HTTP_404_NOT_FOUND)
-    category = Category.objects.get(name=name)
+    category = Category.objects.get(pk=pk)
     if 'criterion' in request.data:
         criterion = request.data['criterion']
     else:

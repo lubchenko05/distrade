@@ -114,7 +114,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='category-detail', lookup_field='name')
+    url = serializers.HyperlinkedIdentityField(view_name='category-detail', lookup_field='pk')
 
     class Meta:
         model = Category
@@ -125,4 +125,5 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['customer', 'products', 'date', 'status']
+        fields = ['customer', 'products', 'date', 'status', 'typeof_delivery',
+                  'typeof_payment', 'name', 'surname', 'address', 'email']
