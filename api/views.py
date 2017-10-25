@@ -170,7 +170,7 @@ def get_self_user(request):
 @permission_classes([IsAuthenticated, IsAdminUser])
 def deploy(request):
     try:
-        os.system('/usr/src/app/update.sh')
+        os.system('sh /usr/src/app/update.sh')
         return Response(data={"ok": "Deploy was complete!"})
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'error':'deploy error'})
