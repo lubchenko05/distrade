@@ -12,7 +12,10 @@ from .views import (
     get_user_detail,
     get_self_user,
     OrderListView,
-    deploy)
+    deploy,
+    update_category,
+    update_category__add_criterion,
+    update_category__remove_criterion)
 
 
 urlpatterns = [
@@ -25,7 +28,9 @@ urlpatterns = [
     url(r'^category/$', ListCategoryView.as_view(), name='category-list'),
     url(r'^category/create/$', create_category, name='category-create'),
     url(r'^category/(?P<name>[\w-]+)/$', DetailCategoryView.as_view(), name='category-detail'),
-    url(r'^provider/(?P<name>[\w-]+)/$', DetailProviderView.as_view(), name='provider-detail'),
+    url(r'^category/(?P<name>[\w-]+)/update/$', update_category, name='category-update'),
+    url(r'^category/(?P<name>[\w-]+)/update/add-criterion/$', update_category__add_criterion, name='category-add-criterion'),
+    url(r'^provider/(?P<name>[\w-]+)/update/remove-criterion/$', update_category__remove_criterion, name='category-remove-criterion'),
     url(r'^product/$', ListProductView.as_view(), name='product-list'),
     url(r'^product/(?P<pk>[\w-]+)/$', DetailProductView.as_view(), name='product-detail'),
 

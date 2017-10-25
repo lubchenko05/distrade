@@ -99,7 +99,7 @@ class Criterion(models.Model):
     category = models.ForeignKey(Category, null=True, related_name='criterion')
 
     def __str__(self):
-        return self.name
+        return '%s - %s' % (self.name, self.category.name)
 
 
 class Provider(models.Model):

@@ -81,12 +81,40 @@ def update_category(request, name):
         category.description = request.data['description']
     if 'image' in request.data:
         category.image = request.data['image']
+    return Response(data=CategoryDetailSerializer(category).data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+def update_category__add_criterion(request, name):
+    if not Category.objects.filter(name=name).exists():
+        return Response(data={"error": 'Category with name %s was not found' % name},
+                        status=status.HTTP_404_NOT_FOUND)
+    category = Category.objects.get(name=name)
     if 'criterion' in request.data:
         criterion = request.data['criterion']
-        if type(criterion) == list:
-            pass
-        else:
-            pass
+    else:
+        return Response(data={"error": "List of criterion required that named 'criterion'"})
+    for c in criterion:
+        Criterion.objects.create(category=category, name=c)
+    return Response(data=CategoryDetailSerializer(category).data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+def update_category__remove_criterion(request, name):
+    if not Category.objects.filter(name=name).exists():
+        return Response(data={"error": 'Category with name %s was not found' % name},
+                        status=status.HTTP_404_NOT_FOUND)
+    category = Category.objects.get(name=name)
+    if 'criterion' in request.data:
+        criterion = request.data['criterion']
+    else:
+        return Response(data={"error": "List of criterion required that named 'criterion'"})
+    obj_criterion = Criterion.objects.filter(category=category)
+    for i in obj_criterion:
+        if i.name in criterion:
+            i.delete()
     return Response(data=CategoryDetailSerializer(category).data)
 
 
