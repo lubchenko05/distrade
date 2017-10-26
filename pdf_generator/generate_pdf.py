@@ -4,24 +4,35 @@ import jinja2
 import os
 
 
-"""
-    <tr>
-      <td>Cell</td>td>CellCellCellCellCellCell</td><td>Cell</td><td>Cell</td><td>Cell</td>
-      <td>Cell</td><td>Cell</td><td>Cell</td><td>Cell</td></tr>
-"""
-
-
-def generate(id, name, surname, phone, address, products):
+def generate(id, name, surname, phone, address, list_products):
     pdf_file = None
-    row = ''
     sum = 0
-
-    for i in products:
-        pass
+    for i in list_products:
+        sum += i.product.price
+    products = [[i.product.name,
+                 i.count if i.count else 0,
+                 i.get_characteristic("Фасовка") if i.get_characteristic("Фасовка") else 0,
+                 i.get_characteristic("Фасовка")*1000 if i.get_characteristic("Фасовка") else 0,
+                 i.get_characteristic("Цена за кг") if i.get_characteristic("Фасовка") else 0,
+                 i.product.price,
+                 ] for i in list_products]
     date = datetime.datetime.now().date()
-    context = {}
-    f = render('static/index.html', context=context)
-    pdf_file = pdfkit.from_file(f, 'output.pdf')
+    context = {
+        'name': name if name else '',
+        'surname': surname if surname else '',
+        'address': address if address else '',
+        'id': id if id else 0,
+        'date': date,
+        'phone': phone if phone else '',
+        'products': products,
+        'sum': sum,
+    }
+    print(os.getcwd()+'/static/index.html')
+    f = render(os.getcwd()+'/pdf_generator/static/index.html', context)
+    f2 = open('output.html', 'w')
+    f2.write(f)
+    f2.close()
+    pdf_file = pdfkit.from_string(f, False)
     return pdf_file
 
 
@@ -30,6 +41,3 @@ def render(tpl_path, context):
     return jinja2.Environment(
         loader=jinja2.FileSystemLoader(path or './')
     ).get_template(filename).render(context)
-
-if __name__ == '__main__':
-    generate('0', 'Yurii', 'Liubchenko', '8 800 555 35 35', 'Akademyka Yangelya 20 Kyiv', [])

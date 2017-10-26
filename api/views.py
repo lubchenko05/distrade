@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
-from root.models import Category, Provider, Product, Order, Criterion, Like
+from root.models import Category, Provider, Product, Order, Criterion, Like, Check
 from root.permissions import IsSelf
 from .serializers import (
     UserSerializer,

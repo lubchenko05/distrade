@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User, PermissionsMixin
 from django.db.models.signals import post_save
 from django.utils import timezone
+from pdf_generator import generate_pdf
 
 
 class MyUserManager(BaseUserManager):
@@ -61,10 +62,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.username
 
-    @models.permalink
-    def get_absolute_url(self):
-        return ('user-detail', (), {'pk': self.pk})
-
 
 UserModel = get_user_model()
 
@@ -80,7 +77,6 @@ class Profile(models.Model):
 
     def __str__(self):
           return "%s's profile" % self.user
-
 
 
 class Category(models.Model):
@@ -173,6 +169,7 @@ class Order(models.Model):
     name = models.CharField(max_length=100, null=True)
     surname = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=255, null=True)
+    phone = models.CharField(max_length=255, null=True)
     email = models.CharField(max_length=100, null=True)
 
     def __str__(self):
@@ -192,6 +189,11 @@ class OrderProduct(models.Model):
 
     def __str__(self):
         return "%s - %s * %s" % (self.order.date, self.product.name, int(self.count))
+
+    def get_characteristic(self, name):
+        c = Characteristic.objects.filter(product=self.product, criterion__name=name)
+        if c.exists():
+            return c[0].value.split(' ')[0]
 
 
 class Message(models.Model):
@@ -222,8 +224,13 @@ class Check(models.Model):
     customer = models.ForeignKey(UserModel)
     file = models.FileField(null=True, blank=True, upload_to='Checks')
 
+    def get_pdf(self):
+        list_products = OrderProduct.objects.filter(order__pk=self.order.pk)
+        generate_pdf.generate(self.order.id, self.order.name, self.order.surname,
+                              self.order.phone, self.order.address, list_products)
+
     def __str__(self):
-        return self.order
+        return self.order.__str__()
 
 
 class BlackList(models.Model):

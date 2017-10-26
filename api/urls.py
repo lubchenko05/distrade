@@ -17,13 +17,14 @@ from .views import (
     update_category__add_criterion,
     update_category__remove_criterion,
     update_product__add_like,
-    update_product__remove_like)
+    update_product__remove_like,
+    get_pdf)
 
 
 urlpatterns = [
     url(r'^deploy/$', deploy, name='deploy'),
     url(r'^order/$', OrderListView.as_view(), name='order-list'),
-
+    url(r'^get-pdf/$', get_pdf, name='get-pdf'),
     url(r'^user/registration/$', CreateUserView.as_view(), name='create-user'),
     url(r'^user/$', get_self_user, name='detail-self'),
     url(r'^user/(?P<pk>[\w-]+)/update/$', UpdateUserView.as_view(), name='update-user'),

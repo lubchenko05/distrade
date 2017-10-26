@@ -76,5 +76,6 @@ admin.site.register(Message, MessageAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Like, LikeAdmin)
+admin.site.register(Check)
 
 

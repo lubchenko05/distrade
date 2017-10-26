@@ -2,7 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        body{
+    width: 100%;
+}
+.table-main {
+    border-collapse: collapse;
+    margin: auto;
+}
+td{
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-left: 1em;
+}
+.table-main td{
+    text-align: center;
+    border: solid black 2px;
+}
+th{
+    border: solid black 2px;
+    padding: .5em;
+    background-color: whitesmoke;
+}
+.container{
+    width: 100%;
+    text-align: center;
+}
+.summary{
+    margin-top: 15px;
+    margin-left: 5%;
+    font-size: 115%;
+}
+    </style>
 </head>
 <body>
 <div>
@@ -26,9 +57,9 @@
                <b><u> Одержувач </u></b>
             </td>
             <td>
-                        ПІБ {name}&nbsp;{surname} <br>
-                        Телефон {phone} <br>
-                        Адреса {address}
+                        ПІБ {{ name }}&nbsp;{{ surname }} <br>
+                        Телефон {{ phone }} <br>
+                        Адреса {{ address }}
             </td>
                     <tr>
             <td valign="top">
@@ -52,8 +83,8 @@
         <p>
         <h3>
             <b>
-                Видаткова накладна № {id} <br>
-                від {date}
+                Видаткова накладна № {{ id }} <br>
+                від {{ date }}
             </b>
         </h3>
         </p>
@@ -67,10 +98,8 @@
       <th colspan="2">Кількість</th>
       <th rowspan="2">Одиниці виміру</th>
       <th rowspan="2">Кількість</th>
-      <th rowspan="2">Ціна без ПДВ</th>
-      <th rowspan="2">Сума без ПДВ</th>
-      <th rowspan="2">Cума з ПДВ</th>
-
+      <th rowspan="2">Ціна за кг</th>
+      <th rowspan="2">Сума</th>
     </tr>
     <tr>
         <th>Пакунок</th>
@@ -78,8 +107,19 @@
     </tr>
   </thead>
     <tbody>
-    {row}
-    <tr>
+    {% for product in products %}
+            <tr>
+                <td>{{ loop.index }} {# starting index 1 #}</td>
+                {% for p in product %}
+                    {% if loop.index == 4 %}
+                        <td>кг</td>
+                    {% endif %}
+                    <td>{{ p }}</td>
+                {% endfor %}
+
+            </tr>
+    {% endfor %}
+        <tr>
         <td style = "border: transparent;"></td>
         <td style = "border: transparent;"></td>
         <td style = "border: transparent;"></td>
@@ -87,15 +127,13 @@
         <td style = "border: transparent;"></td>
         <td style = "border: transparent;"></td>
         <td style = "border: transparent; text-align: right; padding-right: 8px; font-size: 130%"><b>Разом:</b></td>
-        <td>{sum}</td>
-        <td>{sum_plus_pdv}</td>
+        <td>{{sum}}</td>
     </tr>
     </tbody>
 </table>
 
     <div class="summary">
-        <b> Всього на суму: {sum} гривень</b> <br>
-        ПДВ: {pdv} <br>
+        <b> Всього на суму: {{ sum }} гривень</b> <br>
         Місце складання: м. Київ <br>
     </div>
 
@@ -112,7 +150,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; {name}&nbsp;{surname}</td>
+            <td>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; {{name}}&nbsp;{{surname}}</td>
         </tr>
     </table>
 
