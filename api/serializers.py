@@ -99,7 +99,7 @@ class ProductImagesSerializer(serializers.ModelSerializer):
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ('users', )
+        fields = ('users', 'likes_count')
 
 
 class ProductSerializer(serializers.ModelSerializer):
