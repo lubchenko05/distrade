@@ -83,11 +83,9 @@ class CriterionSerializer(serializers.ModelSerializer):
 
 
 class CharacteristicSerializer(serializers.ModelSerializer):
-    criterion = CriterionSerializer(read_only=True)
-
     class Meta:
         model = Characteristic
-        fields = ('criterion', 'value',)
+        fields = ('name', 'value',)
 
 
 class ProductImagesSerializer(serializers.ModelSerializer):

@@ -1,5 +1,7 @@
 import pdfkit
 import datetime
+import jinja2
+import os
 
 
 """
@@ -15,23 +17,19 @@ def generate(id, name, surname, phone, address, products):
     sum = 0
 
     for i in products:
-        row += f'<tr>' \
-               '< td > Cell < / td > ' \
-               '<td > CellCellCellCellCellCell < / td > ' \
-               '< td > Cell < / td > ' \
-               '< td > Cell < / td > ' \
-               '< td > Cell < / td >' \
-               '< td > Cell < / td > ' \
-               '< td > Cell < / td > ' \
-               '< td > Cell < / td > ' \
-               '< td > Cell < / td >' \
-               '</tr>'
-
+        pass
     date = datetime.datetime.now().date()
     with open('static/index.html') as f:
+        f.id = id
         pdf_file = pdfkit.from_file(f, 'output.pdf')
     return pdf_file
 
+
+def render(tpl_path, context):
+    path, filename = os.path.split(tpl_path)
+    return jinja2.Environment(
+        loader=jinja2.FileSystemLoader(path or './')
+    ).get_template(filename).render(context)
 
 if __name__ == '__main__':
     generate('0', 'Yurii', 'Liubchenko', '8 800 555 35 35', 'Akademyka Yangelya 20 Kyiv', [])

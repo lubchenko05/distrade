@@ -146,6 +146,9 @@ class Characteristic(models.Model):
     def __str__(self):
         return '%s - %s' % (self.product.name, self.criterion.name)
 
+    def name(self):
+        return self.criterion.name
+
 
 class Feedback(models.Model):
     owner = models.ForeignKey(get_user_model(), related_name='feedbacks', on_delete=models.CASCADE)
