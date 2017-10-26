@@ -213,7 +213,7 @@ TODO:
 0. Add liked for user and likes for product. [Done]
 1. View for add category. [Done]
 2. View for edit category. [Done]
-3. View for adding and removing likes.
+3. View for adding and removing likes. [Done]
 4. View for add order.
 5. View for edit order.
 6. View for generate check.

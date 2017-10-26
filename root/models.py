@@ -168,8 +168,8 @@ class Order(models.Model):
     date = models.DateTimeField(default=timezone.now)
     customer = models.ForeignKey(UserModel)
     status = models.CharField(max_length=255, choices=STATUS, default='NEW')
-    typeof_delivery = models.CharField(max_length=100, null=True)
-    typeof_payment = models.CharField(max_length=100, null=True)
+    typeof_delivery = models.CharField(max_length=100, null=True)  # TODO: Add choices
+    typeof_payment = models.CharField(max_length=100, null=True)  # TODO: Add choices
     name = models.CharField(max_length=100, null=True)
     surname = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=255, null=True)
