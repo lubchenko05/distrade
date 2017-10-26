@@ -126,6 +126,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def likes_count(self):
+        return self.liked.count()
+
 
 class ProductImages(models.Model):
     product = models.ForeignKey(Product, related_name='images')

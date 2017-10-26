@@ -99,7 +99,7 @@ class ProductImagesSerializer(serializers.ModelSerializer):
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = ('users', 'likes_count')
+        fields = ('users', )
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -111,7 +111,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'price', 'description', 'characteristics', 'images', 'category', 'provider', 'liked')
+        fields = ('id', 'name', 'price', 'description', 'characteristics', 'images', 'category', 'provider', 'liked', 'likes_count')
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
