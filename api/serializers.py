@@ -133,7 +133,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['url', 'name', 'description', 'image']
+        fields = ['id', 'url', 'name', 'description', 'image']
 
 
 class OrderSerializer(serializers.ModelSerializer):
