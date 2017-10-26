@@ -95,4 +95,10 @@ db.sqlite3
 # idea 
 .idea/
 
+# vscode
+.vscode/
+
+# Images
+Images/
+
 local_settings.py
