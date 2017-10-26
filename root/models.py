@@ -82,12 +82,6 @@ class Profile(models.Model):
           return "%s's profile" % self.user
 
 
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-       profile, created = Profile.objects.get_or_create(user=instance)
-
-post_save.connect(create_user_profile, sender=User)
-
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, blank='True')
