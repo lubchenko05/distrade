@@ -59,6 +59,10 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ('product', 'likes_count',)
 
 
+class OrderProductsAdmin(admin.ModelAdmin):
+    list_display = ('order', 'product', 'count')
+    list_filter = ('order', 'product', 'count')
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Criterion, CriterionAdmin)
 admin.site.register(Product, ProductAdmin)
@@ -67,6 +71,7 @@ admin.site.register(Characteristic, CharacteristicAdmin)
 admin.site.register(Provider, ProviderAdmin)
 admin.site.register(Feedback, FeedbackAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderProduct, OrderProductsAdmin)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)

@@ -165,7 +165,6 @@ class Order(models.Model):
         ('OK', 'Delivered'),
     )
 
-    products = models.ManyToManyField(Product)
     date = models.DateTimeField(default=timezone.now)
     customer = models.ForeignKey(UserModel)
     status = models.CharField(max_length=255, choices=STATUS, default='NEW')
@@ -182,8 +181,17 @@ class Order(models.Model):
     def total_cost(self):
         cost = 0
         for i in self.products.all():
-            cost += i.price
+            cost += i.product.price
         return cost
+
+
+class OrderProduct(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey(Product, related_name='orders')
+    count = models.IntegerField(validators=[MaxValueValidator(10000), MinValueValidator(1)])
+
+    def __str__(self):
+        return "%s - %s * %s" % (self.order.date, self.product.name, int(self.count))
 
 
 class Message(models.Model):
@@ -208,7 +216,7 @@ class Like(models.Model):
 
 
 class Check(models.Model):
-    order = models.ForeignKey(Order)
+    order = models.ForeignKey(Order, related_name='order_check')
     date = models.DateTimeField(default=timezone.now)
     products = models.TextField()
     customer = models.ForeignKey(UserModel)
