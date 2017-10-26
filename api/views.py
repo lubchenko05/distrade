@@ -9,13 +9,13 @@ from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
 from root.models import Category, Provider, Product, Order, Criterion, Like, Check
-from root.permissions import IsSelf
+from root.permissions import IsSelf, IsOrderCustomer, IsOrderCustomer
 from .serializers import (
     UserSerializer,
     CategorySerializer,
     CategoryDetailSerializer,
     ProviderSerializer,
-    ProductSerializer, OrderSerializer)
+    ProductSerializer, OrderSerializer, OrderDetailSerializer, OrderCreateSerializer, CheckSerializer)
 
 UserModel = get_user_model()
 
@@ -170,8 +170,32 @@ def update_product__remove_like(request, pk):
 
 class OrderListView(ListAPIView):
     queryset = Order.objects.all()
-    permission_classes(AllowAny,)
+    permission_classes(AllowAny)
     serializer_class = OrderSerializer
+
+
+class DetailOrderView(RetrieveAPIView):
+    queryset = Order.objects.all()
+    permission_classes([IsAuthenticated, IsOrderCustomer])
+    serializer_class = OrderDetailSerializer
+
+
+class CreateOrderView(RetrieveAPIView):
+    queryset = Order.objects.all()
+    permission_classes([IsAuthenticated, ])
+    serializer_class = OrderCreateSerializer
+
+
+class UpdateOrderView(UpdateAPIView):
+    queryset = Order.objects.all()
+    permission_classes([IsAuthenticated, ])
+    serializer_class = OrderCreateSerializer
+
+
+class CheckListView(ListAPIView):
+    queryset = Check.objects.all()
+    permission_classes([IsAuthenticated, ])
+    serializer_class = CheckSerializer
 
 
 @api_view(['GET'])
@@ -214,9 +238,9 @@ TODO:
 1. View for add category. [Done]
 2. View for edit category. [Done]
 3. View for adding and removing likes. [Done]
-4. View for add order.
-5. View for edit order.
-6. View for generate check.
+4. View for add order. [Done]
+5. View for edit order. [Done]
+6. View for generate check. [Done]
 7. View for paying with LiqPay
 8. View for add product.
 9. View for edit product.
