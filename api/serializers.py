@@ -32,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         phone = ''
         image = None
         address = ''
+        email = ''
         if 'profile' in validated_data:
             profile_data = validated_data.pop('profile')
         # create profile

@@ -19,9 +19,9 @@ def generate(id, name, surname, phone, address, products):
     for i in products:
         pass
     date = datetime.datetime.now().date()
-    with open('static/index.html') as f:
-        f.id = id
-        pdf_file = pdfkit.from_file(f, 'output.pdf')
+    context = {}
+    f = render('static/index.html', context=context)
+    pdf_file = pdfkit.from_file(f, 'output.pdf')
     return pdf_file
 
 
