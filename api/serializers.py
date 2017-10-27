@@ -156,54 +156,52 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
-    status = serializers.CharField(allow_blank=True, allow_null=True)
+    status = serializers.CharField(read_only=True)
+    customer = serializers.SerializerMethodField('_user')
+    email = serializers.CharField(allow_blank=True, allow_null=True)
     products = serializers.ListField()
-
 
     class Meta:
         model = Order
-        fields = ['status', 'products', 'typeof_delivery',
-                  'typeof_payment', 'name', 'surname', 'address', 'email']
+        fields = ['status', 'customer', 'products', 'typeof_delivery',
+                  'typeof_payment', 'name', 'surname', 'address', 'email', 'phone']
+
+    def _user(self, obj):
+        user = self.context['request'].user
+        return user
 
     def create(self, validated_data):
-        customer = self.context['request.user']
         typeof_delivery = validated_data['typeof_delivery'] if 'typeof_delivery' in validated_data else ''
         typeof_payment = validated_data['typeof_payment'] if 'typeof_payment' in validated_data else ''
         name = validated_data['name'] if 'name' in validated_data else ''
         surname = validated_data['surname'] if 'surname' in validated_data else ''
         address = validated_data['address'] if 'address' in validated_data else ''
         email = validated_data['email'] if 'email' in validated_data else ''
+        phone = validated_data['phone'] if 'phone' in validated_data else ''
 
-        if 'products' in validated_data:
-            products = validated_data['products']
-            for i in products:
-                product = Product.objects.filter(pk=i[0])
-                if product.exists():
-                    OrderProduct.objects.create(order=self, product=product[0], count=i[1])
-
-        order = Order.objects.create(customer=customer,
+        order = Order.objects.create(customer=self.context['request'].user,
                                      typeof_delivery=typeof_delivery,
                                      typeof_payment=typeof_payment,
                                      name=name,
                                      surname=surname,
                                      address=address,
-                                     email=email)
+                                     email=email, phone=phone)
         order.save()
+
+        if 'products' in validated_data:
+            products = validated_data['products']
+            for i in products:
+                product = Product.objects.filter(pk=i[0]).first()
+                if product:
+                    order_product = OrderProduct.objects.filter(product=product, order=order).first()
+                    if order_product:
+                        order_product.count += i[1]
+                    else:
+                        order_product = OrderProduct.objects.create(order=order, product=product, count=i[1])
+                    order_product.save()
         return order
 
     def update(self, instance, validated_data):
-        if 'status' in validated_data:
-            if validated_data['status'] == "PAY":
-                check = Check.objects.filter(order=instance)
-                if not check.exists():
-                    order = instance,
-                    product = ', '.join(['"%s":{"price": "%s", "count":"%s"}'
-                                         % (p.product.name, p.product.price, p.count) for p in instance.products])
-                    customer = instance.customer
-                    check = Check.objects.create(order=order, product=product[:-1] if product else '', customer=customer)
-                    check.file = check.get_pdf()
-                    check.save()
-            instance.status = validated_data['status']  # TODO: CHECK PAYMENT
         if 'typeof_delivery' in validated_data:
             instance.typeof_delivery = validated_data['typeof_delivery']
         if 'typeof_payment' in validated_data:
@@ -217,6 +215,18 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         if 'email' in validated_data:
             instance.email = validated_data['email']
         instance.save()
+        if 'status' in validated_data:
+            if validated_data['status'] == "PAY":
+                check = Check.objects.filter(order=instance)
+                if not check.exists():
+                    order = instance,
+                    product = ', '.join(['"%s":{"price": "%s", "count":"%s"}'
+                                         % (p.product.name, p.product.price, p.count) for p in instance.products])
+                    customer = instance.customer
+                    check = Check.objects.create(order=order, product=product[:-1] if product else '', customer=customer)
+                    check.file = check.get_pdf()
+                    check.save()
+            instance.status = validated_data['status']  # TODO: CHECK PAYMENT
         return instance
 
 

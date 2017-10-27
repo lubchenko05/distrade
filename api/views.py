@@ -180,7 +180,7 @@ class DetailOrderView(RetrieveAPIView):
     serializer_class = OrderDetailSerializer
 
 
-class CreateOrderView(RetrieveAPIView):
+class CreateOrderView(CreateAPIView):
     queryset = Order.objects.all()
     permission_classes([IsAuthenticated, ])
     serializer_class = OrderCreateSerializer

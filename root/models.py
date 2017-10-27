@@ -171,6 +171,7 @@ class Order(models.Model):
     address = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
     email = models.CharField(max_length=100, null=True)
+    phone = models.CharField(max_length=20, null=True)
 
     def __str__(self):
         return '%s - %s' % (self.customer.username, str(self.date))
