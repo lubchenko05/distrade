@@ -157,7 +157,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(allow_blank=True, allow_null=True)
-    products = serializers.ListField(allow_blank=True)
+    products = serializers.ListField()
 
 
     class Meta:
