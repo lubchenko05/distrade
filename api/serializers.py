@@ -139,7 +139,14 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'url', 'name', 'description', 'image']
 
 
+class OrderProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProduct
+        fields = ['product', 'count']
+
+
 class OrderSerializer(serializers.ModelSerializer):
+    products = OrderProductSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
@@ -148,6 +155,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+    products = OrderProductSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
@@ -159,14 +167,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
     email = serializers.CharField(allow_blank=True, allow_null=True, required=False)
     product_list = serializers.ListField(write_only=True)
-    delivery_datetime = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S.%fZ")
+    delivery_datetime = serializers.DateTimeField()
+
     class Meta:
         model = Order
-        fields = ['id', 'status', 'product_list', 'typeof_delivery',
+        fields = ['id', 'status', 'delivery_datetime', 'product_list', 'typeof_delivery',
                   'typeof_payment', 'name', 'surname', 'address', 'email', 'phone']
-
-    def get_instance(self):
-        return self.instance
 
     def create(self, validated_data):
         typeof_delivery = validated_data['typeof_delivery'] if 'typeof_delivery' in validated_data else ''
