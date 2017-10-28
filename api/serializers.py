@@ -143,7 +143,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'customer', 'delivery_datetime', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment']
 
 
@@ -151,7 +151,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'customer', 'delivery_datetime', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment', 'name', 'surname', 'address', 'email']
 
 
@@ -159,7 +159,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
     email = serializers.CharField(allow_blank=True, allow_null=True, required=False)
     product_list = serializers.ListField(write_only=True)
-
+    delivery_datetime = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S.%fZ")
     class Meta:
         model = Order
         fields = ['id', 'status', 'product_list', 'typeof_delivery',
@@ -176,6 +176,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         address = validated_data['address'] if 'address' in validated_data else ''
         email = validated_data['email'] if 'email' in validated_data else ''
         phone = validated_data['phone'] if 'phone' in validated_data else ''
+        delivery_datetime = validated_data['delivery_datetime'] if 'delivery_datetime' else ''
 
         order = Order.objects.create(customer=self.context['user'],
                                      typeof_delivery=typeof_delivery,
@@ -183,7 +184,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                                      name=name,
                                      surname=surname,
                                      address=address,
-                                     email=email, phone=phone)
+                                     email=email,
+                                     phone=phone,
+                                     delivery_datetime=delivery_datetime)
         order.save()
 
         if 'product_list' in validated_data:
