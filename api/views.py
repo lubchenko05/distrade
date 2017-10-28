@@ -36,7 +36,6 @@ class ListCategoryView(ListAPIView):
     queryset = Category.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = CategorySerializer
-    pagination_class = StandardResultsSetPagination
 
 
 class DetailCategoryView(RetrieveAPIView):
