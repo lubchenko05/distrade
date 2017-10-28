@@ -135,7 +135,7 @@ class DetailProductView(RetrieveAPIView):
     queryset = Product.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = ProductSerializer
-    pagination_class = StandardResultsSetPaginationп
+    pagination_class = StandardResultsSetPagination
 
 
 @api_view(['GET'])
