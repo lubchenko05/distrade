@@ -29,6 +29,7 @@ class IsManager(permissions.BasePermission):
     message = 'Allowed only for manager'
 
     def has_permission(self, request, view):
-        return 'ShopManager' in [i.name for i in request.user.groups.all()]
+        request.user.is_staff
+        return request.user.is_staff
 
 

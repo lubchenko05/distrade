@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from api.paginations import StandardResultsSetPagination
 from root.models import Category, Provider, Product, Order, Criterion, Like, Check
-from root.permissions import IsSelf, IsOrderCustomer, IsOrderCustomer
+from root.permissions import IsSelf, IsOrderCustomer, IsOrderCustomer, IsManager
 from .serializers import (
     UserSerializer,
     CategorySerializer,
@@ -48,7 +48,7 @@ class DetailCategoryView(RetrieveAPIView):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+@permission_classes([IsManager, ])  # In prod change to IsManager or IsAdmin
 def create_category(request):
     if 'name' in request.data:
         if Category.objects.filter(name=request.data['name']).exists():
@@ -71,7 +71,7 @@ def create_category(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+@permission_classes([IsManager, ])  # In prod change to IsManager or IsAdmin
 def update_category(request, pk):
     if not Category.objects.filter(pk=pk).exists():
         return Response(data={"error": 'Category with name %s was not found' % pk},
@@ -85,7 +85,7 @@ def update_category(request, pk):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+@permission_classes([IsManager, ])  # In prod change to IsManager or IsAdmin
 def update_category__add_criterion(request, pk):
     if not Category.objects.filter(pk=pk).exists():
         return Response(data={"error": 'Category with pk %s was not found' % pk},
@@ -101,7 +101,7 @@ def update_category__add_criterion(request, pk):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated, ])  # In prod change to IsManager or IsAdmin
+@permission_classes([IsManager, ])  # In prod change to IsManager or IsAdmin
 def update_category__remove_criterion(request, pk):
     if not Category.objects.filter(pk=pk).exists():
         return Response(data={"error": 'Category with name %s was not found' % pk},
@@ -169,10 +169,12 @@ def update_product__remove_like(request, pk):
 
 
 class OrderListView(ListAPIView):
-    queryset = Order.objects.all()
-    permission_classes(AllowAny)
+    permission_classes([IsAuthenticated, ])
     serializer_class = OrderSerializer
     pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        return Order.objects.filter(customer=self.request.user).order_by('-date')
 
 
 class DetailOrderView(RetrieveAPIView):
@@ -194,7 +196,7 @@ def create_order(request):
 
 class UpdateOrderView(UpdateAPIView):
     queryset = Order.objects.all()
-    permission_classes([IsAuthenticated, ])
+    permission_classes([IsAuthenticated, IsOrderCustomer])
     serializer_class = OrderCreateSerializer
 
 
@@ -202,6 +204,9 @@ class CheckListView(ListAPIView):
     queryset = Check.objects.all()
     permission_classes([IsAuthenticated, ])
     serializer_class = CheckSerializer
+
+    def get_queryset(self):
+        return Check.objects.filter(customer=self.request.user)
 
 
 @api_view(['GET'])
@@ -247,6 +252,7 @@ TODO:
 4. View for add order. [Done]
 5. View for edit order. [Done]
 6. View for generate check. [Done]
+
 7. View for paying with LiqPay
 8. View for add product.
 9. View for edit product.

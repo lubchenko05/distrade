@@ -76,7 +76,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('url', 'username', 'password', 'profile', 'likes')
+        fields = ('url', 'username', 'password', 'likes')
 
 
 class CriterionSerializer(serializers.ModelSerializer):
@@ -213,6 +213,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             instance.typeof_delivery = validated_data['typeof_delivery']
         if 'typeof_payment' in validated_data:
             instance.typeof_payment = validated_data['typeof_payment']
+        if 'delivery_datetime' in validated_data:
+            instance.delivery_datetime = validated_data['delivery_datetime']
         if 'name' in validated_data:
             instance.name = validated_data['name']
         if 'surname' in validated_data:
@@ -221,9 +223,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             instance.address = validated_data['address']
         if 'email' in validated_data:
             instance.email = validated_data['email']
-        instance.save()
         if 'status' in validated_data:
-            if validated_data['status'] == "PAY":
+            if validated_data['status'] == "PAY" or "RUN" and instance.customer.is_staff:
                 check = Check.objects.filter(order=instance)
                 if not check.exists():
                     order = instance,
@@ -234,6 +235,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                     check.file = check.get_pdf()
                     check.save()
             instance.status = validated_data['status']  # TODO: CHECK PAYMENT
+        instance.save()
         return instance
 
 
