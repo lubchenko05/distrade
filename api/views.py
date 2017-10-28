@@ -180,10 +180,15 @@ class DetailOrderView(RetrieveAPIView):
     serializer_class = OrderDetailSerializer
 
 
-class CreateOrderView(CreateAPIView):
-    queryset = Order.objects.all()
-    permission_classes([IsAuthenticated, ])
-    serializer_class = OrderCreateSerializer
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, ])
+def create_order(request):
+    serializer = OrderCreateSerializer(data=request.data, context={'user': request.user})
+    if serializer.is_valid():
+        serializer.save()
+        data = OrderDetailSerializer(serializer.instance)
+        return Response(data.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateOrderView(UpdateAPIView):

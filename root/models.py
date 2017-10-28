@@ -170,7 +170,7 @@ class Order(models.Model):
     surname = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
-    email = models.CharField(max_length=100, null=True)
+    email = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True)
 
     def __str__(self):
@@ -185,7 +185,7 @@ class Order(models.Model):
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='products')
-    product = models.ForeignKey(Product, related_name='orders')
+    product = models.ForeignKey(Product, related_name='orders', blank=True)
     count = models.IntegerField(validators=[MaxValueValidator(10000), MinValueValidator(1)])
 
     def __str__(self):

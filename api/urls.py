@@ -12,8 +12,8 @@ from .views import (
     get_user_detail,
     get_self_user,
     OrderListView,
+    create_order,
     DetailOrderView,
-    CreateOrderView,
     UpdateOrderView,
     CheckListView,
     deploy,
@@ -46,7 +46,7 @@ urlpatterns = [
     url(r'^product/(?P<pk>[\w-]+)/dislike/$', update_product__remove_like, name='product-detail-remove-like'),
 
     url(r'^order/$', OrderListView.as_view(), name='order-list'),
-    url(r'^order/create/$', CreateOrderView.as_view(), name='order-create'),
+    url(r'^order/create/$', create_order, name='order-create'),
     url(r'^order/(?P<pk>[\w-]+)/$', DetailOrderView.as_view(), name='order-detail'),
     url(r'^order/(?P<pk>[\w-]+)/update/$', UpdateOrderView.as_view(), name='order-update'),
 

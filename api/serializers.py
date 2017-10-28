@@ -157,18 +157,16 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
-    customer = serializers.SerializerMethodField('_user')
-    email = serializers.CharField(allow_blank=True, allow_null=True)
-    products = serializers.ListField()
+    email = serializers.CharField(allow_blank=True, allow_null=True, required=False)
+    product_list = serializers.ListField(write_only=True)
 
     class Meta:
         model = Order
-        fields = ['status', 'customer', 'products', 'typeof_delivery',
+        fields = ['id', 'status', 'product_list', 'typeof_delivery',
                   'typeof_payment', 'name', 'surname', 'address', 'email', 'phone']
 
-    def _user(self, obj):
-        user = self.context['request'].user
-        return user
+    def get_instance(self):
+        return self.instance
 
     def create(self, validated_data):
         typeof_delivery = validated_data['typeof_delivery'] if 'typeof_delivery' in validated_data else ''
@@ -179,7 +177,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         email = validated_data['email'] if 'email' in validated_data else ''
         phone = validated_data['phone'] if 'phone' in validated_data else ''
 
-        order = Order.objects.create(customer=self.context['request'].user,
+        order = Order.objects.create(customer=self.context['user'],
                                      typeof_delivery=typeof_delivery,
                                      typeof_payment=typeof_payment,
                                      name=name,
@@ -188,8 +186,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                                      email=email, phone=phone)
         order.save()
 
-        if 'products' in validated_data:
-            products = validated_data['products']
+        if 'product_list' in validated_data:
+            products = validated_data['product_list']
             for i in products:
                 product = Product.objects.filter(pk=i[0]).first()
                 if product:
