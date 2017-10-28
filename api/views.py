@@ -36,6 +36,7 @@ class ListCategoryView(ListAPIView):
     queryset = Category.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = CategorySerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class DetailCategoryView(RetrieveAPIView):
@@ -121,6 +122,7 @@ class ListProductView(ListAPIView):
     queryset = Product.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = ProductSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class DetailProviderView(RetrieveAPIView):
@@ -133,6 +135,7 @@ class DetailProductView(RetrieveAPIView):
     queryset = Product.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = ProductSerializer
+    pagination_class = StandardResultsSetPaginationп
 
 
 @api_view(['GET'])
