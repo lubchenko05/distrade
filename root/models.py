@@ -167,7 +167,6 @@ class Order(models.Model):
     typeof_delivery = models.CharField(max_length=100, null=True)  # TODO: Add choices
     typeof_payment = models.CharField(max_length=100, null=True)  # TODO: Add choices
     name = models.CharField(max_length=100, null=True)
-    surname = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
     email = models.CharField(max_length=100, null=True, blank=True)

@@ -160,7 +160,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
-                  'typeof_payment', 'name', 'surname', 'address', 'email']
+                  'typeof_payment', 'name', 'address', 'email']
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -172,13 +172,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'status', 'product_list', 'typeof_delivery',
-                  'typeof_payment', 'name', 'surname', 'address', 'email', 'phone']
+                  'typeof_payment', 'name', 'address', 'email', 'phone']
 
     def create(self, validated_data):
         typeof_delivery = validated_data['typeof_delivery'] if 'typeof_delivery' in validated_data else ''
         typeof_payment = validated_data['typeof_payment'] if 'typeof_payment' in validated_data else ''
         name = validated_data['name'] if 'name' in validated_data else ''
-        surname = validated_data['surname'] if 'surname' in validated_data else ''
         address = validated_data['address'] if 'address' in validated_data else ''
         email = validated_data['email'] if 'email' in validated_data else ''
         phone = validated_data['phone'] if 'phone' in validated_data else ''
@@ -188,7 +187,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                                      typeof_delivery=typeof_delivery,
                                      typeof_payment=typeof_payment,
                                      name=name,
-                                     surname=surname,
                                      address=address,
                                      email=email,
                                      phone=phone)
@@ -217,8 +215,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             instance.delivery_datetime = validated_data['delivery_datetime']
         if 'name' in validated_data:
             instance.name = validated_data['name']
-        if 'surname' in validated_data:
-            instance.surname = validated_data['surname']
         if 'address' in validated_data:
             instance.address = validated_data['address']
         if 'email' in validated_data:
