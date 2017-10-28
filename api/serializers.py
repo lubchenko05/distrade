@@ -143,7 +143,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment']
 
 
@@ -151,7 +151,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment', 'name', 'surname', 'address', 'email']
 
 

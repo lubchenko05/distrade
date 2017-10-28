@@ -172,6 +172,7 @@ class OrderListView(ListAPIView):
     queryset = Order.objects.all()
     permission_classes(AllowAny)
     serializer_class = OrderSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class DetailOrderView(RetrieveAPIView):
