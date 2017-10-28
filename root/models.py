@@ -171,7 +171,7 @@ class Order(models.Model):
     address = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
     email = models.CharField(max_length=100, null=True, blank=True)
-    delivery_datetime = models.DateTimeField(default=timezone.now)
+    # delivery_datetime = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return '%s - %s' % (self.customer.username, str(self.date))
