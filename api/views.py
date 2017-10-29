@@ -201,7 +201,6 @@ def get_check(request, pk):
             return HttpResponse('<html><body><h1>Not Found(404)</h1></body></html>')
 
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def create_order(request):

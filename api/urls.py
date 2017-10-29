@@ -49,7 +49,6 @@ urlpatterns = [
     url(r'^order/create/$', create_order, name='order-create'),
     url(r'^order/(?P<pk>[\w-]+)/$', DetailOrderView.as_view(), name='order-detail'),
     url(r'^order/(?P<pk>[\w-]+)/update/$', UpdateOrderView.as_view(), name='order-update'),
-    url(r'^order/(?P<pk>[\w-]+)/check/$', get_check, name='order-check'),
 
 
     url(r'^provider/(?P<name>[\w-]+)/$', DetailProviderView.as_view(), name='provider-detail'),
