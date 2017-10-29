@@ -166,7 +166,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(read_only=True)
     email = serializers.CharField(allow_blank=True, allow_null=True, required=False)
-    product_list = serializers.ListField(write_only=True)
+    product_list = serializers.ListField(write_only=True, allow_null=False, allow_empty=False)
     #  delivery_datetime = serializers.DateTimeField()
 
     class Meta:
