@@ -204,6 +204,11 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                     else:
                         order_product = OrderProduct.objects.create(order=order, product=product, count=i[1])
                     order_product.save()
+            product_str = ', '.join(['"%s":{"price": "%s", "count":"%s"}'
+                                 % (p.product.name, p.product.price, p.count) for p in order.products])
+            check = Check.objects.create(order=order, product=product_str[:-1] if product_str else '', customer=order.customer)
+            check.file = check.get_pdf()
+            check.save()
         return order
 
     def update(self, instance, validated_data):
