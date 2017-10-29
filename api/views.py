@@ -194,7 +194,7 @@ def get_check(request, pk):
             if request.user == orders[0].customer or request.user.is_staff:
                 if not orders[0].get_check:
                     return HttpResponse('<h1>Not Found(404)</h1>')
-                return HttpResponse(orders[0].get_check.get().get_pdf(), content_type='application/pdf')
+                return HttpResponse(orders[0].get_check.get().get_pdf(), content_type='application/report')
             else:
                 return HttpResponse('<html><body>Access error</body></html>')
         else:

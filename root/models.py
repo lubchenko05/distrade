@@ -1,11 +1,11 @@
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import User, PermissionsMixin
-from django.db.models.signals import post_save
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.utils import timezone
-from pdf_generator import generate_pdf
+
+from report.order_report_generator.generate_report import generate
 
 
 class MyUserManager(BaseUserManager):
@@ -226,7 +226,8 @@ class Check(models.Model):
     customer = models.ForeignKey(UserModel)
 
     def get_pdf(self):
-        return generate_pdf.generate(self.order.id, self.order.name, self.order.phone, self.order.address, self.products)
+        return generate(self.order.id, self.order.name, self.order.phone,
+                                     self.order.address, self.products, self.order.typeof_delivery == "Кур'єром")
 
     def __str__(self):
         return self.order.__str__()

@@ -94,7 +94,7 @@ th{
     <thead>
     <tr>
       <th rowspan="2">№</th>
-      <th rowspan="2">Товар</th>
+      <th rowspan="2">Назва</th>
       <th colspan="2">Кількість</th>
       <th rowspan="2">Одиниці виміру</th>
       <th rowspan="2">Кількість</th>
@@ -119,6 +119,16 @@ th{
 
             </tr>
     {% endfor %}
+    {% if delivery %}
+        <td colspan="2"><b>Доставка</b></td>
+        <td><b>-</b></td>
+        <td><b>-</b></td>
+        <td><b>-</b></td>
+        <td><b>-</b></td>
+        <td><b>-</b></td>
+        <td><b>{{delivery}}</b></td>
+    </tr>
+    {% endif %}
         <tr>
         <td style = "border: transparent;"></td>
         <td style = "border: transparent;"></td>
@@ -127,7 +137,7 @@ th{
         <td style = "border: transparent;"></td>
         <td style = "border: transparent;"></td>
         <td style = "border: transparent; text-align: right; padding-right: 8px; font-size: 130%"><b>Разом:</b></td>
-        <td>{{sum}}</td>
+        <td><b>{{sum}}</b></td>
     </tr>
     </tbody>
 </table>

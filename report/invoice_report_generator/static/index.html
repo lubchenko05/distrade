@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{
+    width: 100%;
+}
+.table-main {
+    border-collapse: collapse;
+    margin: auto;
+}
+td{
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-left: 1em;
+}
+.table-main td{
+    text-align: center;
+    border: solid black 2px;
+}
+th{
+    border: solid black 2px;
+    padding: .5em;
+    background-color: whitesmoke;
+}
+.container{
+    width: 100%;
+    text-align: center;
+}
+.summary{
+    margin-top: 15px;
+    margin-left: 5%;
+    font-size: 115%;
+}
+    </style>
+</head>
+<body>
+<div>
+    <table style="margin-left: 5%;">
+        <tr>
+            <td valign="top">
+                <b><u>Одержувач</u></b>
+            </td>
+            <td>
+                Товариство з обмеженою відповідальністю "Distrade" <br>
+                ЕРДПОУ 00000000, тел. +38 (095) 630-22-16 <br>
+                P/p 00000000000000 у АТ"ББАНК" МФО 000000 <br>
+                ІПН 000000000000, номер свідотства 00000000 <br>
+                Є платником податку на прибуток на загальних підставах
+                Адреса вул. Академіка Янгеля 20 м. Київ 03056
+
+             </td>
+        </tr>
+    </table>
+
+    <div class="container">
+        <p>
+        <h3>
+            <b>
+                Видаткова накладна<br>
+                від {{ date }}
+            </b>
+        </h3>
+        </p>
+    </div>
+
+    <table width="90%" class="table-main">
+    <thead>
+    <tr>
+      <th rowspan="2">№</th>
+      <th rowspan="2">Назва</th>
+      <th rowspan="2">Пакунок</th>
+      <th rowspan="2">Одиниці виміру</th>
+      <th rowspan="2">Кількість</th>
+    </tr>
+  </thead>
+    <tbody>
+    {% for product in products %}
+            <tr>
+                <td>{{ loop.index }} {# starting index 1 #}</td>
+                {% for p in product %}
+                    {% if loop.index == 3 %}
+                        <td>кг</td>
+                    {% endif %}
+                    <td>{{ p }}</td>
+                {% endfor %}
+
+            </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+    <table width="90%" style="margin-top: 100px; margin-left: 5%;">
+        <tr style="border: solid black 2px">
+            <td>Відвантажив(ла)&ensp;<u><b>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</b></u></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Отримал(а)&ensp;<u><b>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;</b></u></td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

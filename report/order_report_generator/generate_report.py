@@ -1,13 +1,13 @@
 import json
-import pdfkit
 import datetime
 import jinja2
 import os
 
 
-def generate(id, name, phone, address, products):
+def generate(id, name, phone, address, products, is_delivery):
     pdf_file = None
     total = 0
+    delivery = 30
     date = datetime.datetime.now().date()
     product_data = json.loads(products)
     product_list = []
@@ -15,6 +15,11 @@ def generate(id, name, phone, address, products):
         product_list.append([i['name'], i['count'], i['weight'].split()[0], int(float(i['weight'].split()[0])*1000),
                              i['for_kg'], i['price']])
         total += float(i['price'])
+        delivery += 10*int(i['count'])
+    if is_delivery:
+        total += delivery
+    else:
+        delivery = None
 
     context = {
         'name': name if name else '',
@@ -24,12 +29,12 @@ def generate(id, name, phone, address, products):
         'phone': phone if phone else '',
         'products': product_list,
         'sum': total,
+        'delivery': delivery,
     }
-    print(os.getcwd()+'/static/index.html')
-    f = render(os.getcwd()+'/pdf_generator/static/index.html', context)
+    print(os.getcwd()+'/report/order_report_generator/static/index.html')
+    f = render(os.getcwd()+'/report/order_report_generator/static/index.html', context)
 
-    pdf_file = pdfkit.from_string(f, False)
-    return pdf_file
+    return f
 
 
 def render(tpl_path, context):

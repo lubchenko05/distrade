@@ -218,7 +218,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             check = Check.objects.create(order=order,
                                          products=product_str if product_str else '',
                                          customer=order.customer)
-            check.get_pdf()
             check.save()
         return order
 
