@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import User, PermissionsMixin
@@ -183,6 +186,9 @@ class Order(models.Model):
             cost += i.product.price
         return cost
 
+    def check_code(self):
+        return self.get_check.get().code
+
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='products')
@@ -224,10 +230,18 @@ class Check(models.Model):
     date = models.DateTimeField(default=timezone.now)
     products = models.TextField()
     customer = models.ForeignKey(UserModel)
+    code = models.CharField(max_length=8, default='')
 
     def get_pdf(self):
         return generate(self.order.id, self.order.name, self.order.phone,
                                      self.order.address, self.products, self.order.typeof_delivery == "Кур'єром")
+
+    @staticmethod
+    def generate_code():
+       while True:
+           code = ''.join([random.choice(string.ascii_letters) for i in range(8)])
+           if not Check.objects.filter(code=code).exists():
+               return code
 
     def __str__(self):
         return self.order.__str__()

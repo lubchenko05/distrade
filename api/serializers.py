@@ -150,7 +150,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'check_code', 'customer', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment']
 
 
@@ -159,7 +159,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'products', 'date', 'status', 'typeof_delivery',
+        fields = ['id', 'check_code', 'customer', 'products', 'date', 'status', 'typeof_delivery',
                   'typeof_payment', 'name', 'address', 'email']
 
 
@@ -217,7 +217,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             print(product_str)
             check = Check.objects.create(order=order,
                                          products=product_str if product_str else '',
-                                         customer=order.customer)
+                                         customer=order.customer,
+                                         code=Check.generate_code())
             check.save()
         return order
 

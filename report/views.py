@@ -7,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from root.models import Order
 from report.invoice_report_generator import generate_report as invoice_generate_pdf
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, ])
-def get_check(request, pk):
-    orders = Order.objects.filter(pk=pk)
+def get_check(request, code):
+    orders = Order.objects.filter(get_check__code=code)
     if orders.exists():
         if request.user == orders[0].customer or request.user.is_staff:
             if not orders[0].get_check:
