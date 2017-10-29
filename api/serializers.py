@@ -204,10 +204,21 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                     else:
                         order_product = OrderProduct.objects.create(order=order, product=product, count=i[1])
                     order_product.save()
-            product_str = ', '.join(['"%s":{"price": "%s", "count":"%s"}' % (p.product.name, p.product.price, p.count)
-                                     for p in order.products])
-            check = Check.objects.create(order=order, product=product_str[:-1] if product_str else '', customer=order.customer)
-            check.file = check.get_pdf()
+
+            product_str = '{ '
+            for i in order.products.all():
+                product_str += f'"{i.product.pk}":' + '{'\
+                               f'"name": "{i.product.name}", ' \
+                               f'"count": "{i.count if i.count else 0}", ' \
+                               f'"weight": "{i.get_characteristic("Фасовка") if i.get_characteristic("Фасовка") else 0}", ' \
+                               f'"for_kg": "{i.get_characteristic("Цена за кг") if i.get_characteristic("Цена за кг") else 0}", ' \
+                               f'"price": "{i.product.price}"' + '}, '
+            product_str = product_str[:-2] + ' }'
+            print(product_str)
+            check = Check.objects.create(order=order,
+                                         products=product_str if product_str else '',
+                                         customer=order.customer)
+            check.get_pdf()
             check.save()
         return order
 

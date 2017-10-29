@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, RetrieveAPIView
@@ -185,6 +186,22 @@ class DetailOrderView(RetrieveAPIView):
     serializer_class = OrderDetailSerializer
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, ])
+def get_check(request, pk):
+        orders = Order.objects.filter(pk=pk)
+        if orders.exists():
+            if request.user == orders[0].customer or request.user.is_staff:
+                if not orders[0].get_check:
+                    return HttpResponse('<h1>Not Found(404)</h1>')
+                return HttpResponse(orders[0].get_check.get().get_pdf(), content_type='application/pdf')
+            else:
+                return HttpResponse('<html><body></body></html>')
+        else:
+            return HttpResponse('<html><body><h1>Not Found(404)</h1></body></html>')
+
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, ])
 def create_order(request):
@@ -243,19 +260,3 @@ def deploy(request):
         return Response(data={"ok": "Deploy was complete!"})
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'deploy error'})
-
-
-"""
-TODO:
-0. Add liked for user and likes for product. [Done]
-1. View for add category. [Done]
-2. View for edit category. [Done]
-3. View for adding and removing likes. [Done]
-4. View for add order. [Done]
-5. View for edit order. [Done]
-6. View for generate check. [Done]
-
-7. View for paying with LiqPay
-8. View for add product.
-9. View for edit product.
-"""

@@ -1,37 +1,33 @@
+import json
 import pdfkit
 import datetime
 import jinja2
 import os
 
 
-def generate(id, name, surname, phone, address, list_products):
+def generate(id, name, phone, address, products):
     pdf_file = None
-    sum = 0
-    for i in list_products:
-        sum += i.product.price
-    products = [[i.product.name,
-                 i.count if i.count else 0,
-                 i.get_characteristic("Фасовка") if i.get_characteristic("Фасовка") else 0,
-                 i.get_characteristic("Фасовка")*1000 if i.get_characteristic("Фасовка") else 0,
-                 i.get_characteristic("Цена за кг") if i.get_characteristic("Фасовка") else 0,
-                 i.product.price,
-                 ] for i in list_products]
+    total = 0
     date = datetime.datetime.now().date()
+    product_data = json.loads(products)
+    product_list = []
+    for k, i in product_data.items():
+        product_list.append([i['name'], i['count'], i['weight'].split()[0], int(float(i['weight'].split()[0])*1000),
+                             i['for_kg'], i['price']])
+        total += float(i['price'])
+
     context = {
         'name': name if name else '',
-        'surname': surname if surname else '',
         'address': address if address else '',
         'id': id if id else 0,
         'date': date,
         'phone': phone if phone else '',
-        'products': products,
-        'sum': sum,
+        'products': product_list,
+        'sum': total,
     }
     print(os.getcwd()+'/static/index.html')
     f = render(os.getcwd()+'/pdf_generator/static/index.html', context)
-    f2 = open('output.html', 'w')
-    f2.write(f)
-    f2.close()
+
     pdf_file = pdfkit.from_string(f, False)
     return pdf_file
 

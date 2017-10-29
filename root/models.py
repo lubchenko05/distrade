@@ -13,6 +13,7 @@ class MyUserManager(BaseUserManager):
     A custom user manager to deal with emails as unique identifiers for auth
     instead of usernames. The default that's used is "UserManager"
     """
+
     def _create_user(self, username, password, **extra_fields):
         """
         Creates and saves a User with the given email and password.
@@ -76,7 +77,7 @@ class Profile(models.Model):
     surname = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-          return "%s's profile" % self.user
+        return "%s's profile" % self.user
 
 
 class Category(models.Model):
@@ -107,7 +108,7 @@ class Provider(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=255, unique=True,)
+    name = models.CharField(max_length=255, unique=True, )
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     provider = models.ForeignKey(Provider, related_name='products')
@@ -170,6 +171,7 @@ class Order(models.Model):
     address = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=255, null=True)
     email = models.CharField(max_length=100, null=True, blank=True)
+
     # delivery_datetime = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -193,7 +195,7 @@ class OrderProduct(models.Model):
     def get_characteristic(self, name):
         c = Characteristic.objects.filter(product=self.product, criterion__name=name)
         if c.exists():
-            return c[0].value.split(' ')[0]
+            return c[0].value
 
 
 class Message(models.Model):
@@ -218,16 +220,13 @@ class Like(models.Model):
 
 
 class Check(models.Model):
-    order = models.ForeignKey(Order, related_name='order_check')
+    order = models.ForeignKey(Order, related_name='get_check')
     date = models.DateTimeField(default=timezone.now)
     products = models.TextField()
     customer = models.ForeignKey(UserModel)
-    file = models.FileField(null=True, blank=True, upload_to='Checks')
 
     def get_pdf(self):
-        list_products = OrderProduct.objects.filter(order__pk=self.order.pk)
-        generate_pdf.generate(self.order.id, self.order.name, self.order.surname,
-                              self.order.phone, self.order.address, list_products)
+        return generate_pdf.generate(self.order.id, self.order.name, self.order.phone, self.order.address, self.products)
 
     def __str__(self):
         return self.order.__str__()
