@@ -196,7 +196,7 @@ def get_check(request, pk):
                     return HttpResponse('<h1>Not Found(404)</h1>')
                 return HttpResponse(orders[0].get_check.get().get_pdf(), content_type='application/pdf')
             else:
-                return HttpResponse('<html><body></body></html>')
+                return HttpResponse('<html><body>Access error</body></html>')
         else:
             return HttpResponse('<html><body><h1>Not Found(404)</h1></body></html>')
 
