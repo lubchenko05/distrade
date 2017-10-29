@@ -187,7 +187,7 @@ class DetailOrderView(RetrieveAPIView):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated, ])
+@permission_classes([AllowAny, ])
 def get_check(request, pk):
         orders = Order.objects.filter(pk=pk)
         if orders.exists():
