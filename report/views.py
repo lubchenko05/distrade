@@ -13,12 +13,10 @@ from report.invoice_report_generator import generate_report as invoice_generate_
 def get_check(request, code):
     orders = Order.objects.filter(get_check__code=code)
     if orders.exists():
-        if request.user == orders[0].customer or request.user.is_staff:
-            if not orders[0].get_check:
-                return HttpResponse('<h1>Not Found(404)</h1>')
-            return HttpResponse(orders[0].get_check.get().get_pdf())
-        else:
-            return HttpResponse('<html><body>Access error</body></html>')
+        if not orders[0].get_check:
+            return HttpResponse('<h1>Not Found(404)</h1>')
+        return HttpResponse(orders[0].get_check.get().get_pdf())
+
     else:
         return HttpResponse('<html><body><h1>Not Found(404)</h1></body></html>')
 
