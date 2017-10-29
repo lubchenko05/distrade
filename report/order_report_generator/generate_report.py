@@ -13,8 +13,8 @@ def generate(id, name, phone, address, products, is_delivery):
     product_list = []
     for k, i in product_data.items():
         product_list.append([i['name'], i['count'], i['weight'].split()[0], int(float(i['weight'].split()[0])*1000),
-                             i['for_kg'], i['price']])
-        total += float(i['price'])
+                             i['for_kg'], float(i['price'])*int(i['count'])])
+        total += float(i['price'])*int(i['count'])
         delivery += 10*int(i['count'])
     if is_delivery:
         total += delivery
