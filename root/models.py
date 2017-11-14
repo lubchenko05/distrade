@@ -7,7 +7,7 @@ from django.contrib.auth.models import User, PermissionsMixin
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
-
+from django.core.urlresolvers import reverse
 from report.order_report_generator.generate_report import generate
 
 
@@ -235,6 +235,9 @@ class Check(models.Model):
     def get_pdf(self):
         return generate(self.order.id, self.order.name, self.order.phone,
                                      self.order.address, self.products, self.order.typeof_delivery == "Кур'єром")
+
+    def get_absolute_url(self):
+        return reverse('order-check', args=[self.code])
 
     @staticmethod
     def generate_code():

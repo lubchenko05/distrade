@@ -8,6 +8,7 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, R
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
+from .send_mail import send_order
 from api.paginations import StandardResultsSetPagination
 from root.models import Category, Provider, Product, Order, Criterion, Like, Check
 from root.permissions import IsSelf, IsOrderCustomer, IsOrderCustomer, IsManager
@@ -208,6 +209,13 @@ def create_order(request):
     if serializer.is_valid():
         serializer.save()
         data = OrderDetailSerializer(serializer.instance)
+        try:
+            if request.is_secure():
+                send_order("https://"+request.get_host()+'/report/order/'+data['check_code'].value)
+            else:
+                send_order("http://"+request.get_host()+'/report/order/'+data['check_code'].value)
+        except Exception as e:
+            print(e)
         return Response(data.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

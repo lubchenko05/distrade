@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from api.send_mail import send_order
 from root.models import Profile, Category, Product, ProductImages, Provider, Order, Criterion, Characteristic, Like, \
     OrderProduct, Check
 
@@ -191,6 +192,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                                      email=email,
                                      phone=phone)
                                      #  delivery_datetime=delivery_datetime
+
         order.save()
 
         if 'product_list' in validated_data:
